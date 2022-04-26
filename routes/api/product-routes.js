@@ -55,7 +55,7 @@ router.get('/:id', (req, res) => {
 
 // create new product
 router.post('/', (req, res) => {
-  /* req.body should look like this...
+  /* req.params should look like this...
     {
       product_name: "Basketball",
       price: 200.00,
@@ -63,12 +63,12 @@ router.post('/', (req, res) => {
       tagIds: [1, 2, 3, 4]
     }
   */
-  Product.create(req.body)
+  Product.create(req.params)
     .then((product) => {
       // if there's product tags, we need to create pairings to bulk create in the ProductTag model
-      console.log(req.body.tagIds);
-      if (req.body.tagIds) {
-        const productTagIdArr = req.body.tagIds.map((tag_id) => {
+      console.log(req.params.tagIds);
+      if (req.params.tagIds) {
+        const productTagIdArr = req.params.tagIds.map((tag_id) => {
           return {
             product_id: product.id,
             tag_id,
@@ -89,7 +89,7 @@ router.post('/', (req, res) => {
 // update product
 router.put('/:id', (req, res) => {
   // update product data
-  Product.update(req.body, {
+  Product.update(req.params, {
     where: {
       id: req.params.id,
     },
@@ -102,7 +102,7 @@ router.put('/:id', (req, res) => {
       // get list of current tag_ids
       const productTagIds = productTags.map(({ tag_id }) => tag_id);
       // create filtered list of new tag_ids
-      const newProductTags = req.body.tagIds
+      const newProductTags = req.params.tagIds
         .filter((tag_id) => !productTagIds.includes(tag_id))
         .map((tag_id) => {
           return {
@@ -112,7 +112,7 @@ router.put('/:id', (req, res) => {
         });
       // figure out which ones to remove
       const productTagsToRemove = productTags
-        .filter(({ tag_id }) => !req.body.tagIds.includes(tag_id))
+        .filter(({ tag_id }) => !req.params.tagIds.includes(tag_id))
         .map(({ id }) => id);
 
       // run both actions
