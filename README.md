@@ -1,7 +1,5 @@
 # eCommerce-Back-End
 
-# Note-Taker
-
 Designed and developed by Brendan Ahearn
 
 ![eCommerce]()
