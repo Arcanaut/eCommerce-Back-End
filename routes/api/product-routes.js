@@ -1,33 +1,44 @@
 const router = require('express').Router();
+const res = require('express/lib/response');
 const { Product, Category, Tag, ProductTag } = require('../../models');
 
 // The `/api/products` endpoint
 //attributes: ['id','product_name','price','stock','category_id'],
 // get all products
-Product.findAll({
-  attributes: [
-    'id', 
-    'product_name', 
-    'price', 
-    'stock', 
-    'category_id'
-  ],
-  include: [
-    {
-      model: Category,
-      attributes: ['id', 'category_name']
-    },
-    {
-      model: Tag,
-      attributes: ['id', 'tag_name']
-    }
-  ]
+router.get('/', (req,res) => {
+  Product.findAll({
+    attributes: [
+      'id', 
+      'product_name', 
+      'price', 
+      'stock', 
+      'category_id'
+    ],
+    include: [
+      {
+        model: Category,
+        attributes: ['id', 'category_name']
+      },
+      {
+        model: Tag,
+        attributes: ['id', 'tag_name']
+      }
+    ]
+    // include: [
+    //   Category,
+    //   {
+    //     model: Tag,
+    //     through: ProductTag
+    //   }
+    // ]
+  })
+    .then(data => res.json(data))
+    .catch(err => {
+      console.log(err);
+      res.status(500).json(err);
+    });
 })
-  .then(data => res.json(data))
-  .catch(err => {
-    console.log(err);
-    res.status(500).json(err);
-  });
+
 
 // get one product
 router.get('/:id', (req, res) => {
@@ -111,6 +122,7 @@ router.put("/:id", (req, res) => {
       },
     }
   ) // find all associated tags from ProductTag
+  //TODO: Get .then to read value of product
   .then((product) => {
     return ProductTag.findAll({ where: { product_id: req.params.id } });
   })
