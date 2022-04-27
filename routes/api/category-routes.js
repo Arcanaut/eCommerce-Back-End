@@ -14,7 +14,7 @@ router.get('/', (req, res) => {
         attributes: ["id", "product_name", "price", "stock", "category_id"],
       }
     })
-    .then((data) => res.json(data))
+    .then((categoryData) => res.json(categoryData))
     .catch((err) => {
       console.log(err);
       res.status(500).json(err);
@@ -29,17 +29,17 @@ router.get('/:id', (req, res) => {
       },
       include: {
         model: Product,
-        attributes: ["id", "product_name", "price", "stock", "category_id"],
+        attributes: ['category_id'],
       },
     })
-    .then(data => {
-      if (!data) {
+    .then(categoryData => {
+      if (!categoryData) {
         res.status(404).json({
           message: 'No match found for this ID'
         });
         return;
       }
-      res.json(data);
+      res.json(categoryData);
     })
     .catch(err => {
       console.log(err);
@@ -50,9 +50,9 @@ router.get('/:id', (req, res) => {
 router.post('/', (req, res) => {
   // create a new category, destructuring akin to Jest-Another-RPG project
   Category.create({
-      category_name: req.params.category_name,
+      category_name: req.body.category_name,
     })
-    .then((data) => res.json(data))
+    .then((categoryData) => res.json(categoryData))
     .catch((err) => {
       console.log(err);
       res.status(500).json(err);
@@ -61,21 +61,21 @@ router.post('/', (req, res) => {
 
 router.put('/:id', (req, res) => {
   // update a category by its `id` value
-  Category.update(req.params, {
-      category_name: req.params.category_name,
-    }, {
+  Category.update(
+    {
       where: {
-        id: req.params.id
-      }
-    })
-    .then(data => {
-      if (!data) {
+        id: req.body.id,
+      },
+    }
+  )
+    .then(categoryData => {
+      if (!categoryData) {
         res.status(404).json({
           message: 'No categories match this ID'
         });
         return;
       }
-      res.json(data);
+      res.json(categoryData);
     })
     .catch(err => {
       console.log(err);
@@ -90,14 +90,14 @@ router.delete('/:id', (req, res) => {
         id: req.params.id
       }
     })
-    .then(data => {
-      if (!data) {
+    .then(categoryData => {
+      if (!categoryData) {
         res.status(404).json({
           message: 'No categories match this ID'
         });
         return;
       }
-      res.json(data);
+      res.json(categoryData);
     })
     .catch(err => {
       console.log(err);

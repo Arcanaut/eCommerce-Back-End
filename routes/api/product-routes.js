@@ -24,15 +24,8 @@ router.get('/', (req,res) => {
         attributes: ['id', 'tag_name']
       }
     ]
-    // include: [
-    //   Category,
-    //   {
-    //     model: Tag,
-    //     through: ProductTag
-    //   }
-    // ]
   })
-    .then(data => res.json(data))
+    .then(productData => res.json(productData))
     .catch(err => {
       console.log(err);
       res.status(500).json(err);
@@ -62,12 +55,12 @@ router.get('/:id', (req, res) => {
       },
     ]
   })
-  .then((data) => {
-    if(!data) {
+  .then((productData) => {
+    if(!productData) {
       res.status(404).json({message:'No products with this ID found.'});
       return;
     }
-    res.json(data);
+    res.json(productData);
   })
   .catch((err) => {
     console.log(err);
@@ -108,20 +101,11 @@ router.post('/', (req, res) => {
 
 // update product
 router.put("/:id", (req, res) => {
-  Product.update(
-    {
-      product_name: req.body.product_name,
-      price: req.body.price,
-      stock: req.body.stock,
-      tagIds: req.body.tag_id,
-      category_id: req.body.category_id,
+  Product.update(req.body, {
+    where: {
+      id: req.params.id,
     },
-    {
-      where: {
-        id: req.params.id,
-      },
-    }
-  ) // find all associated tags from ProductTag
+  }) // find all associated tags from ProductTag
   //TODO: Get .then to read value of product
   .then((product) => {
     return ProductTag.findAll({ where: { product_id: req.params.id } });
@@ -164,12 +148,12 @@ router.delete('/:id', (req, res) => {
       id: req.params.id
   }
 })
-  .then(data => {
-      if (!data) {
+  .then(productData => {
+      if (!productData) {
         res.status(404).json({ message: 'No products match this ID'});
         return;
       }
-      res.json(data);
+      res.json(productData);
 })
   .catch(err => {
       console.log(err); 
