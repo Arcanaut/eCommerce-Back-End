@@ -105,11 +105,11 @@ router.put("/:id", (req, res) => {
     where: {
       id: req.params.id,
     },
-  }) // find all associated tags from ProductTag
-  //TODO: Get .then to read value of product
-  .then((product) => {
-    return ProductTag.findAll({ where: { product_id: req.params.id } });
   })
+    .then((product) => {
+      // find all associated tags from ProductTag
+      return ProductTag.findAll({ where: { product_id: req.params.id }});
+    })
     .then((productTags) => {
       // get list of current tag_ids
       const productTagIds = productTags.map(({ tag_id }) => tag_id);
