@@ -2,7 +2,7 @@
 
 Designed and developed by Brendan Ahearn
 
-![eCommerce]()
+![eCommerce](https://github.com/Arcanaut/eCommerce-Back-End/blob/main/assets/thumbnail.png)
 ## App Description
 An inventory tracking app used to manage the stock of a store, including the type of item, the number, the category, the price, and more.
 
